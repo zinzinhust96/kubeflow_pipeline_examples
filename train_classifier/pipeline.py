@@ -33,7 +33,7 @@ training_set_labels_local_path = os.path.join(test_data_url_prefix, 'training_se
 # gfile.Copy(training_set_labels_local_path, training_set_labels_gcs_path)
 
 # output_model_uri_template = os.path.join(output_data_gcs_dir, kfp.dsl.EXECUTION_ID_PLACEHOLDER, 'output_model_uri', 'data')
-output_model_local_template = component_url_prefix + 'tests/output/trained'
+# output_model_local_template = component_url_prefix + 'tests/output/trained'
 
 # xor_model_config = requests.get('https://raw.githubusercontent.com/kubeflow/pipelines/master/components/sample/keras/train_classifier/tests/testdata/' + 'model_config.json').content
 
@@ -43,6 +43,7 @@ xor_model_config = Path('./tests/testdata').joinpath('model_config.json').read_t
 
 #Load the component
 train_op = kfp.components.load_component_from_file('./component.yaml')
+keras_convert_hdf5_model_to_tf_saved_model_op = kfp.components.load_component_from_url('https://raw.githubusercontent.com/kubeflow/pipelines/51e49282d9511e4b72736c12dc66e37486849c6e/components/_converters/KerasModelHdf5/to_TensorflowSavedModel/component.yaml')
 
 #Use the component as part of the pipeline
 @kfp.dsl.pipeline(name='Test keras/train_classifier', description='Pipeline to test keras/train_classifier component')
@@ -50,7 +51,6 @@ def pipeline_to_test_keras_train_classifier():
     train_task = train_op(
         training_set_features_path=training_set_features_local_path,
         training_set_labels_path=training_set_labels_local_path,
-        output_model_uri=output_model_local_template,
         model_config=xor_model_config,
         number_of_classes=2,
         number_of_epochs=10,
@@ -59,6 +59,10 @@ def pipeline_to_test_keras_train_classifier():
                                      host_path=k8s_client.V1HostPathVolumeSource(path='/home/docker/data_processing'))) \
     .add_volume_mount(k8s_client.V1VolumeMount(mount_path='/data_processing',
                                                name='data-processing'))
+
+    keras_model_in_tf_format = keras_convert_hdf5_model_to_tf_saved_model_op(
+        model=train_task.outputs['output_model_uri'],
+    ).output
     #Use train_task.outputs['output_model_uri'] to obtain the reference to the trained model URI that can be a passed to other pipeline tasks (e.g. for prediction or analysis)
 
 

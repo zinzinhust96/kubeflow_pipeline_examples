@@ -24,7 +24,7 @@ parser = argparse.ArgumentParser(description='Train classifier model using Keras
 
 parser.add_argument('--training-set-features-path', type=str, help='Local or GCS path to the training set features table.')
 parser.add_argument('--training-set-labels-path', type=str, help='Local or GCS path to the training set labels (each label is a class index from 0 to num-classes - 1).')
-parser.add_argument('--output-model-path', type=str, help='Local or GCS path specifying where to save the trained model. The model (topology + weights + optimizer state) is saved in HDF5 format and can be loaded back by calling keras.models.load_model')
+# parser.add_argument('--output-model-path', type=str, help='Local or GCS path specifying where to save the trained model. The model (topology + weights + optimizer state) is saved in HDF5 format and can be loaded back by calling keras.models.load_model')
 parser.add_argument('--model-config-json', type=str, help='JSON string containing the serialized model structure. Can be obtained by calling model.to_json() on a Keras model.')
 parser.add_argument('--num-classes', type=int, help='Number of classifier classes.')
 parser.add_argument('--num-epochs', type=int, default=100, help='Number of epochs to train the model. An epoch is an iteration over the entire `x` and `y` data provided.')
@@ -67,13 +67,13 @@ model.fit(
 )
 
 # Save model and weights
-if not args.output_model_path.startswith('gs://'):
-    save_dir = os.path.dirname(args.output_model_path)
-    if not os.path.isdir(save_dir):
-        os.makedirs(save_dir)
+# if not args.output_model_path.startswith('gs://'):
+#     save_dir = os.path.dirname(args.output_model_path)
+#     if not os.path.isdir(save_dir):
+#         os.makedirs(save_dir)
 
-model.save(args.output_model_path)
-print('Saved trained model at %s ' % args.output_model_path)
+model.save(args.output_model_path_file)
+print('Saved trained model at %s ' % args.output_model_path_file)
 
-Path(args.output_model_path_file).parent.mkdir(parents=True, exist_ok=True)
-Path(args.output_model_path_file).write_text(args.output_model_path)
+# Path(args.output_model_path_file).parent.mkdir(parents=True, exist_ok=True)
+# Path(args.output_model_path_file).write_text(args.output_model_path)

@@ -76,10 +76,10 @@ def pipeline_to_test_keras_train_classifier():
     #Use train_task.outputs['output_model_uri'] to obtain the reference to the trained model URI that can be a passed to other pipeline tasks (e.g. for prediction or analysis)
 ```
 
-# Helper
+## Helper
 
-## Access bash in container
+### Access bash in container
 docker run -i -t --rm zinzinhust96/kubeflow_keras_train_classifier /bin/bash
 
-## Transfer testdata folder to Minikube 1-node cluster
+### Transfer testdata folder to Minikube 1-node cluster
 scp -r tests/testdata/ docker@192.168.49.2:/home/docker/data_processing
