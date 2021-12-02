@@ -55,12 +55,10 @@ def pipeline_to_test_keras_train_classifier():
         number_of_classes=2,
         number_of_epochs=10,
         batch_size=32,
-    ).add_volume(k8s_client.V1Volume(
-        name='data-processing',
-        host_path=k8s_client.V1HostPathVolumeSource(path='/home/docker/data_processing'))) \
-    .add_volume_mount(k8s_client.V1VolumeMount(
-                    mount_path='/data_processing',
-                    name='data-processing'))
+    ).add_volume(k8s_client.V1Volume(name='data-processing',
+                                     host_path=k8s_client.V1HostPathVolumeSource(path='/home/docker/data_processing'))) \
+    .add_volume_mount(k8s_client.V1VolumeMount(mount_path='/data_processing',
+                                               name='data-processing'))
     #Use train_task.outputs['output_model_uri'] to obtain the reference to the trained model URI that can be a passed to other pipeline tasks (e.g. for prediction or analysis)
 
 

@@ -35,10 +35,10 @@ def my_pipeline():
         # Input name "Input 1" is converted to pythonic parameter name "input_1"
         input_1='/data_processing/input.txt',
         parameter_1='5',
-        ).add_volume(k8s_client.V1Volume(name='data-processing', host_path=k8s_client.V1HostPathVolumeSource(path='/home/docker/data_processing'))) \
-                        .add_volume_mount(k8s_client.V1VolumeMount(
-                                        mount_path='/data_processing',
-                                        name='data-processing'))
+        ).add_volume(k8s_client.V1Volume(name='data-processing',
+                                         host_path=k8s_client.V1HostPathVolumeSource(path='/home/docker/data_processing'))) \
+        .add_volume_mount(k8s_client.V1VolumeMount(mount_path='/data_processing',
+                                                   name='data-processing'))
 
     print('write output at: ', get_lines_step.outputs, type(get_lines_step.outputs['output_1']))
     check_output_step = print_op(get_lines_step.outputs['output_1'])
